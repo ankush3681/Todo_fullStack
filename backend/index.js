@@ -2,10 +2,12 @@ const express = require("express");
 require("dotenv").config();
 const { connection } = require("./db");
 const { UserRoute } = require("./route/user.route");
+const { TodoRoute } = require("./route/todo.route");
 
 const app = express();
 app.use(express.json());
 app.use("/user",UserRoute);
+app.use("/todo",TodoRoute);
 
 app.listen(process.env.port, async()=>{
     try{

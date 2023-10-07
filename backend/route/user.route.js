@@ -2,6 +2,7 @@ const express = require("express");
 const { UserModel } = require("../model/user.model");
 const UserRoute = express.Router();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // register
 
@@ -21,7 +22,27 @@ UserRoute.post("/register", async (req, res) => {
 
 // Login
 
-UserRoute.post("/login", (req, res) => {});
+UserRoute.post("/login",async (req, res) => {
+    const { email,pass} = req.body;
+    try {
+        const user =await UserModel.findOne({email});
+        var token = jwt.sign({ foo: 'bar' }, 'todoApp');
+        if(user){
+            bcrypt.compare(pass, user.pass, (err, result)=> {
+                if(err) throw err;
+                if(result){
+                    res.status(200).send({"msg":"Login Successfull.",token})
+                }else{
+                    res.status(200).send({"msg":"Wrong Credentials!!"})
+                }
+            }) 
+        }else{
+            res.status(200).send({"msg":"Email not found!!"})
+        }
+    } catch (err) {
+        res.status(400).send({ err: err.message });
+    }
+});
 
 module.exports = {
   UserRoute,
