@@ -26,7 +26,7 @@ UserRoute.post("/login",async (req, res) => {
     const { email,pass} = req.body;
     try {
         const user =await UserModel.findOne({email});
-        var token = jwt.sign({ foo: 'bar' }, 'todoApp');
+        var token = jwt.sign({ creator:user.name,creatorID:user._id }, 'todoApp');
         if(user){
             bcrypt.compare(pass, user.pass, (err, result)=> {
                 if(err) throw err;

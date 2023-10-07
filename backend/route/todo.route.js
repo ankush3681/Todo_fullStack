@@ -19,7 +19,7 @@ try {
 
 TodoRoute.get("/",async(req,res)=>{
 try {
-    const todo = TodoModel.find();
+    const todo =await TodoModel.find();
     res.status(200).send(todo);
 } catch (err) {
     res.status(400).send({"err":err.message});
@@ -31,7 +31,8 @@ try {
 TodoRoute.patch("/update/:taskId",async(req,res)=>{
    const {taskId} = req.params;
    try {
-    
+     await TodoModel.findByIdAndUpdate({_id:taskId},req.body);
+     res.status(200).send({"msg":`Task with Id ${taskId} is updated Successfully.`})
    } catch (err) {
     res.status(400).send({"err":err.message});
    }
@@ -39,8 +40,14 @@ TodoRoute.patch("/update/:taskId",async(req,res)=>{
 
 // delete
 
-TodoRoute.delete("/delete/:taskId",(req,res)=>{
-
+TodoRoute.delete("/delete/:taskId",async(req,res)=>{
+   const {taskId } = req.params;
+   try {
+      await TodoModel.findByIdAndDelete({_id:taskId});
+      res.status(200).send({"msg":`Task with Id ${taskId} is Delted Successfully.`})
+   } catch (err) {
+    res.status(400).send({"err":err.message});
+   }
 })
 
 module.exports={
